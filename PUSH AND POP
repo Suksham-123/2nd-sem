@@ -1,0 +1,55 @@
+#include <stdio.h>
+#define MAX_SIZE 100 
+
+int stack[MAX_SIZE]; 
+int top = -1;
+
+int isEmpty() {
+    return top == -1;
+}
+
+int isFull() {
+    return top == MAX_SIZE - 1;
+}
+
+void push(int element) {
+    if (isFull()) {
+        printf("Error: stack overflow\n");
+        return;
+    }
+    stack[++top] = element;
+}
+
+int pop() {
+    if (isEmpty()) {
+        printf("Error: stack underflow\n");
+        return -1;
+    }
+    return stack[top--];
+}
+
+void show() {
+    if (isEmpty()) {
+        printf("Stack is empty\n");
+        return;
+    }
+    printf("Stack elements: ");
+    for (int i = top; i >= 0; i--) {
+        printf("%d ", stack[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    push(1);
+    push(2);
+    push(3);
+    show();
+    printf("Popped element: %d\n", pop());
+    show();
+    printf("Popped element: %d\n", pop());
+    printf("Popped element: %d\n", pop());
+    printf("Popped element: %d\n", pop());
+    show();
+    return 0;
+}
