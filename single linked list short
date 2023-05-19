@@ -1,0 +1,137 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+typedef struct LinkedList {
+    Node* head;
+} LinkedList;
+
+void insertAtEnd(LinkedList* list, int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = NULL;
+
+    if (list->head == NULL) {
+        list->head = newNode;
+    } else {
+        Node* current = list->head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = newNode;
+    }
+}
+
+void deleteNode(LinkedList* list, int data) {
+    if (list->head == NULL) {
+        printf("Linked list is empty.\n");
+        return;
+    }
+
+    if (list->head->data == data) {
+        Node* temp = list->head;
+        list->head = list->head->next;
+        free(temp);
+        return;
+    }
+
+    Node* current = list->head;
+    Node* prev = NULL;
+    while (current != NULL && current->data != data) {
+        prev = current;
+        current = current->next;
+    }
+
+    if (current == NULL) {
+        printf("Element not found.\n");
+        return;
+    }
+
+    prev->next = current->next;
+    free(current);
+}
+
+void linearSearch(LinkedList* list, int data) {
+    if (list->head == NULL) {
+        printf("Linked list is empty.\n");
+        return;
+    }
+
+    Node* current = list->head;
+    int index = 0;
+    while (current != NULL && current->data != data) {
+        current = current->next;
+        index++;
+    }
+
+    if (current == NULL) {
+        printf("Element not found.\n");
+        return;
+    }
+
+    printf("Element found at index: %d\n", index);
+}
+
+void display(LinkedList* list) {
+    if (list->head == NULL) {
+        printf("Linked list is empty.\n");
+        return;
+    }
+
+    Node* current = list->head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    LinkedList list;
+    list.head = NULL;
+
+    int choice, element;
+
+    while (1) {
+        printf("\n1. Insert element\n");
+        printf("2. Delete element\n");
+        printf("3. Linear search\n");
+        printf("4. Display list\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter the element to insert: ");
+                scanf("%d", &element);
+                insertAtEnd(&list, element);
+                printf("Element inserted successfully.\n");
+                break;
+            case 2:
+                printf("Enter the element to delete: ");
+                scanf("%d", &element);
+                deleteNode(&list, element);
+                printf("Element deleted successfully.\n");
+                break;
+            case 3:
+                printf("Enter the element to search: ");
+                scanf("%d", &element);
+                linearSearch(&list, element);
+                break;
+            case 4:
+                display(&list);
+                break;
+            case 5:
+                exit(0);
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    }
+
+    return 0;
+}
