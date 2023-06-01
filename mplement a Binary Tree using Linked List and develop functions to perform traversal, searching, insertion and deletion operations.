@@ -1,0 +1,188 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Structure for a node
+struct Node {
+int data;
+struct Node* left;
+struct Node* right;
+};
+
+// Function to create a new node
+struct Node* createNode(int data) {
+struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+newNode->data = data;
+newNode->left = newNode->right = NULL;
+return newNode;
+}
+
+// Function to insert a node in the binary tree
+struct Node* insertNode(struct Node* root, int data) {
+if (root == NULL) {
+root = createNode(data);
+} else {
+int choice;
+printf("Enter 1 to insert as left child or 2 to insert as right child of %d: ", root->data);
+scanf("%d", &choice);
+
+    switch (choice) {
+        case 1:
+            root->left = insertNode(root->left, data);
+            break;
+        case 2:
+            root->right = insertNode(root->right, data);
+            break;
+        default:
+            printf("Invalid choice. Try again.\n");
+    }
+}
+return root;
+}
+
+// Function to perform inorder traversal of the binary tree
+void inorderTraversal(struct Node* root) {
+if (root != NULL) {
+inorderTraversal(root->left);
+printf("%d ", root->data);
+inorderTraversal(root->right);
+}
+}
+
+// Function to perform preorder traversal of the binary tree
+void preorderTraversal(struct Node* root) {
+if (root != NULL) {
+printf("%d ", root->data);
+preorderTraversal(root->left);
+preorderTraversal(root->right);
+}
+}
+
+// Function to perform postorder traversal of the binary tree
+void postorderTraversal(struct Node* root) {
+if (root != NULL) {
+postorderTraversal(root->left);
+postorderTraversal(root->right);
+printf("%d ", root->data);
+}
+}
+
+// Function to search for a key in the binary tree
+struct Node* searchNode(struct Node* root, int key) {
+if (root == NULL || root->data == key) {
+return root;
+}
+
+struct Node* result = searchNode(root->left, key);
+if (result != NULL) {
+    return result;
+}
+
+return searchNode(root->right, key);
+}
+
+// Function to delete a node from the binary tree
+struct Node* deleteNode(struct Node* root, int key) {
+if (root == NULL) {
+return root;
+}
+
+if (key < root->data) {
+    root->left = deleteNode(root->left, key);
+} else if (key > root->data) {
+    root->right = deleteNode(root->right, key);
+} else {
+    // Node to be deleted is found
+
+    // Case 1: No child or only one child
+    if (root->left == NULL) {
+        struct Node* temp = root->right;
+        free(root);
+        return temp;
+    } else if (root->right == NULL) {
+        struct Node* temp = root->left;
+        free(root);
+        return temp;
+    }
+
+    // Case 2: Two children
+    struct Node* minValueNode = root->right;
+    while (minValueNode->left != NULL) {
+        minValueNode = minValueNode->left;
+    }
+    root->data = minValueNode->data;
+    root->right = deleteNode(root->right, minValueNode->data);
+}
+return root;
+}
+
+// Function to free the memory allocated for the binary tree
+void freeBinaryTree(struct Node* root) {
+if (root != NULL) {
+freeBinaryTree(root->left);
+freeBinaryTree(root->right);
+free(root);
+}
+}
+
+int main() {
+struct Node* root = NULL;
+int choice, data;
+
+while (1) {
+    printf("\nBinary Tree Operations\n");
+    printf("1. Insert\n");
+    printf("2. Delete\n");
+    printf("3. Search\n");
+    printf("4. Inorder Traversal\n");
+    printf("5. Preorder Traversal\n");
+    printf("6. Postorder Traversal\n");
+    printf("7. Exit\n");
+    printf("Enter your choice: ");
+    scanf("%d", &choice);
+
+    switch (choice) {
+        case 1:
+            printf("Enter data to be inserted: ");
+            scanf("%d", &data);
+            root = insertNode(root, data);
+            break;
+        case 2:
+            printf("Enter data to be deleted: ");
+            scanf("%d", &data);
+            root = deleteNode(root, data);
+            break;
+        case 3:
+            printf("Enter data to be searched: ");
+            scanf("%d", &data);
+            if (searchNode(root, data) != NULL) {
+                printf("%d is found in the binary tree.\n", data);
+            } else {
+                printf("%d is not found in the binary tree.\n", data);
+            }
+            break;
+        case 4:
+            printf("Inorder Traversal: ");
+            inorderTraversal(root);
+            printf("\n");
+            break;
+        case 5:
+            printf("Preorder Traversal: ");
+            preorderTraversal(root);
+            printf("\n");
+            break;
+        case 6:
+            printf("Postorder Traversal: ");
+            postorderTraversal(root);
+            printf("\n");
+            break;
+        case 7:
+            freeBinaryTree(root);
+            printf("Exiting...\n");
+            exit(0);
+        default:
+            printf("Invalid choice. Try again.\n");
+    }
+}
+
+return 0;
+}
