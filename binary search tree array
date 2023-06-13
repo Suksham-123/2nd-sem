@@ -1,0 +1,101 @@
+#include <stdio.h>
+
+#define MAX_SIZE 100
+
+int tree[MAX_SIZE];
+int size = 0;
+
+int getParentIndex(int index) {
+    return (index - 1) / 2;
+}
+
+int getLeftChildIndex(int index) {
+    return (2 * index) + 1;
+}
+
+int getRightChildIndex(int index) {
+    return (2 * index) + 2;
+}
+
+void insert(int value) {
+    if (size == MAX_SIZE) {
+        printf("Error: Tree is full.\n");
+        return;
+    }
+
+    tree[size] = value;
+    int currentIndex = size;
+    int parentIndex = getParentIndex(currentIndex);
+
+    while (currentIndex > 0 && tree[currentIndex] < tree[parentIndex]) {
+        int temp = tree[currentIndex];
+        tree[currentIndex] = tree[parentIndex];
+        tree[parentIndex] = temp;
+
+        currentIndex = parentIndex;
+        parentIndex = getParentIndex(currentIndex);
+    }
+
+    size++;
+}
+
+int search(int value) {
+    for (int i = 0; i < size; i++) {
+        if (tree[i] == value) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+void inorderTraversal(int index) {
+    if (index < size) {
+        inorderTraversal(getLeftChildIndex(index));
+        printf("%d ", tree[index]);
+        inorderTraversal(getRightChildIndex(index));
+    }
+}
+
+int main() {
+    int choice, value;
+
+    do {
+        printf("1. Insert\n");
+        printf("2. Search\n");
+        printf("3. Inorder Traversal\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter the value to insert: ");
+                scanf("%d", &value);
+                insert(value);
+                break;
+            case 2:
+                printf("Enter the value to search: ");
+                scanf("%d", &value);
+                int foundIndex = search(value);
+                if (foundIndex != -1) {
+                    printf("Value %d is found at index %d in the tree.\n", value, foundIndex);
+                } else {
+                    printf("Value %d is not found in the tree.\n", value);
+                }
+                break;
+            case 3:
+                printf("Inorder Traversal: ");
+                inorderTraversal(0);
+                printf("\n");
+                break;
+            case 4:
+                printf("Exiting the program.\n");
+                break;
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    } while (choice != 4);
+
+    return 0;
+}
